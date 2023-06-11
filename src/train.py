@@ -4,6 +4,7 @@ import logging
 import os
 import pickle
 import sys
+import typing as tp
 
 import numpy as np
 import pandas as pd
@@ -35,7 +36,7 @@ class TweetsClassificationTrainer:
     ```
     """
 
-    def __init__(self, model, train_path: str, test_path: str):
+    def __init__(self, model, train_path: tp.Optional[str] = None, test_path: tp.Optional[str] = None):
         self.model = model
         self.train_path = train_path
         self.test_path = test_path
@@ -94,6 +95,13 @@ class TweetsClassificationTrainer:
         """Saves model to model_save_path"""
         with open(model_save_path, "wb") as f:
             pickle.dump(self.model, f)
+
+    @staticmethod
+    def from_pretrained(model_path: str) -> "TweetsClassificationTrainer":
+        with open(model_path, "rb") as f:
+            model = pickle.load(f)
+
+        return TweetsClassificationTrainer(model)
 
     @staticmethod
     def default_trainer(train_path: str, test_path: str) -> "TweetsClassificationTrainer":

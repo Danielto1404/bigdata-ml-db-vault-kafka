@@ -28,9 +28,24 @@ jobs:
           dvc remote modify vkcloud access_key_id ${{ secrets.VKCLOUD_ACCESS_KEY_ID }} && \
           dvc remote modify vkcloud secret_access_key ${{ secrets.VKCLOUD_SECRET_ACCESS_KEY }} && \
           dvc pull
-      - name: Build and push
+      - name: Build and push twitter-sentiment trainer image
         uses: docker/build-push-action@v4
         with:
           context: .
+          dockerfile: Dockerfiles/twitter.trainer.dockerfile
           push: true
           tags: danielto1404/ml-pipe-twitter-sentiment:latest
+      - name: Build and push Hashicorp custom image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          dockerfile: Dockerfiles/hashicorp.vault.dockerfile
+          push: true
+          tags: danielto1404/hashicorp:latest
+      - name: Build and push Vault store credentials custom image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          dockerfile: Dockerfiles/storing.credentials.dockerfile
+          push: true
+          tags: danielto1404/vault-store-credentials:latest
