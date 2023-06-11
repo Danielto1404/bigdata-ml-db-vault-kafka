@@ -36,8 +36,8 @@ ___
 6. Created CI / CD pipelines using GitHub Actions:
     * [CI](./.github/workflows/ci.yaml)
     * [CD](./.github/workflows/cd.yaml)
-7. Added logging with [Greenplum](https://greenplum.org/) database during functional testing
-
+7. Saving logs with [Greenplum](https://greenplum.org/) database during functional testing
+8. Secrets vault with [HashiCorp Vault](https://www.vaultproject.io/)
 ___
 
 ### Run tests

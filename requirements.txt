@@ -6,3 +6,4 @@ pandas==2.0.0
 scikit-learn==1.2.2
 nltk==3.8.1
 greenplum-python==1.0.1
+hvac==1.1.0
