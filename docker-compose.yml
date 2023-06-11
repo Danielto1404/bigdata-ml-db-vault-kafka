@@ -2,8 +2,6 @@ version: "3.9"
 services:
   twitter-sentiment:
     image: danielto1404/ml-pipe-twitter-sentiment:latest
-    build:
-      dockerfile: Dockerfiles/twitter-sentiment.dockerfile
     command: bash -c "python src/train.py --exp_name=tfidf_logreg
       && python src/test.py --vault-token=${VAULT_TOKEN}
       && coverage run src/unit_tests/test_preprocess.py
@@ -42,8 +40,6 @@ services:
 
   hashicorp:
     image: danielto1404/hashicorp:latest
-    build:
-        dockerfile: Dockerfiles/hashicorp.vault.dockerfile
     container_name: vault
     ports:
       - "8200:8200"
@@ -57,8 +53,6 @@ services:
 
   store_credentials:
     image: danielto1404/vault-store-credentials:latest
-    build:
-        dockerfile: Dockerfiles/storing.credentials.dockerfile
     links:
       - "hashicorp:vault"
     command: bash -c "python vault.py \
