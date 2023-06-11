@@ -6,4 +6,4 @@ RUN pip install hvac==1.1.0
 
 WORKDIR /app
 
-COPY ./src/vault.py /app
+ADD . /app

@@ -36,7 +36,7 @@ services:
     restart: always
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DBNAME}" ]
-      timeout: 2s
+      timeout: 10s
       retries: 10
 
   hashicorp:
@@ -49,7 +49,7 @@ services:
       - VAULT_DEV_ROOT_TOKEN_ID=${VAULT_TOKEN}
     healthcheck:
       test: [ "CMD", "curl", "http://127.0.0.1:8200/v1/sys/seal-status" ]
-      timeout: 2s
+      timeout: 10s
       retries: 10
 
   store_credentials:
@@ -57,7 +57,7 @@ services:
     container_name: store-credentials
     links:
       - "hashicorp:vault"
-    command: bash -c "python vault.py \
+    command: bash -c "python src/vault.py \
       --token=${VAULT_TOKEN} \
       --postgres-user=${POSTGRES_USER} \
       --postgres-password=${POSTGRES_PASSWORD} \
