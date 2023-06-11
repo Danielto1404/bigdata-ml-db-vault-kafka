@@ -19,7 +19,7 @@ class HashicorpVault:
     POSTGRES_CREDENTIALS_PATH = "postgres/credentials"
 
     def __init__(self, token: str):
-        url = f"http://{HASHICORP_VAULT_HOST}:{HASHICORP_VAULT_PORT}"
+        url = f"{HASHICORP_VAULT_HOST}:{HASHICORP_VAULT_PORT}"
         self.client = hvac.Client(url=url, token=token)
 
     def read_postgres_credentials(self) -> PostgresCredentials:
