@@ -3,6 +3,7 @@ services:
   twitter-sentiment:
     image: danielto1404/ml-pipe-twitter-sentiment:latest
     container_name: twitter-sentiment
+    platform: linux/amd64
     command: bash -c "python src/train.py --exp_name=tfidf_logreg
       && python src/test.py --vault-token=${VAULT_TOKEN}
       && coverage run src/unit_tests/test_preprocess.py
@@ -24,6 +25,7 @@ services:
   postgres:
     image: postgres:latest
     container_name: database
+    platform: linux/amd64
     ports:
       - "5432:5432"
     volumes:
@@ -42,6 +44,7 @@ services:
   hashicorp:
     image: danielto1404/hashicorp:latest
     container_name: vault
+    platform: linux/amd64
     ports:
       - "8200:8200"
     restart: always
@@ -55,6 +58,7 @@ services:
   store_credentials:
     image: danielto1404/vault-store-credentials:latest
     container_name: store-credentials
+    platform: linux/amd64
     links:
       - "hashicorp:vault"
     command: bash -c "python src/vault.py \
