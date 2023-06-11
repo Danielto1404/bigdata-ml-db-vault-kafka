@@ -1,20 +1,27 @@
 version: "3.9"
 services:
   twitter-sentiment:
-    build: .
+    image: danielto1404/ml-pipe-twitter-sentiment:latest
+    build:
+      dockerfile: Dockerfiles/twitter-sentiment.dockerfile
     command: bash -c "python src/train.py --exp_name=tfidf_logreg
-      && python src/test.py --db-user=${POSTGRES_USER} --db-password=${POSTGRES_PASSWORD} --db-name=${POSTGRES_DBNAME}
+      && python src/test.py --vault-token=${VAULT_TOKEN}
       && coverage run src/unit_tests/test_preprocess.py
       && coverage run -a src/unit_tests/test_training.py
       && coverage report -m"
     ports:
       - "8000:8000"
-    image: danielto1404/ml-pipe-twitter-sentiment:latest
     links:
       - "postgres:database"
+      - "hashicorp:vault"
     depends_on:
       postgres:
         condition: service_healthy
+      hashicorp:
+        condition: service_healthy
+      store_credentials:
+        condition: service_completed_successfully
+
   postgres:
     container_name: database
     image: postgres:latest
@@ -30,5 +37,35 @@ services:
     restart: always
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DBNAME}" ]
-      timeout: 20s
-      retries: 5
+      timeout: 2s
+      retries: 10
+
+  hashicorp:
+    image: danielto1404/hashicorp:latest
+    build:
+        dockerfile: Dockerfiles/hashicorp.vault.dockerfile
+    container_name: vault
+    ports:
+      - "8200:8200"
+    restart: always
+    environment:
+      - VAULT_DEV_ROOT_TOKEN_ID=${VAULT_TOKEN}
+    healthcheck:
+      test: [ "CMD", "curl", "http://127.0.0.1:8200/v1/sys/seal-status" ]
+      timeout: 2s
+      retries: 10
+
+  store_credentials:
+    image: danielto1404/vault-store-credentials:latest
+    build:
+        dockerfile: Dockerfiles/storing.credentials.dockerfile
+    links:
+      - "hashicorp:vault"
+    command: bash -c "python vault.py \
+      --token=${VAULT_TOKEN} \
+      --postgres-user=${POSTGRES_USER} \
+      --postgres-password=${POSTGRES_PASSWORD} \
+      --postgres-dbname=${POSTGRES_DBNAME}"
+    depends_on:
+      hashicorp:
+        condition: service_healthy

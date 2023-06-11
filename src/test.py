@@ -7,6 +7,7 @@ import pandas as pd
 
 import db as db_tools
 from train import TweetsClassificationTrainer
+from vault import HashicorpVault
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -17,11 +18,7 @@ def main():
     parser = argparse.ArgumentParser("Twitter sentiment testing")
     parser.add_argument("--data", default="tests/samples.csv")
     parser.add_argument("--model", default="experiments/tfidf_logreg/model.pkl")
-    parser.add_argument("--db-user")
-    parser.add_argument("--db-password")
-    parser.add_argument("--db-name")
-    parser.add_argument("--db-host", default=db_tools.POSTGRES_HOST)
-    parser.add_argument("--db-port", default=db_tools.POSTGRES_PORT)
+    parser.add_argument("--vault-token", required=True)
 
     args = parser.parse_args()
 
@@ -35,12 +32,15 @@ def main():
     else:
         logging.info("Functional test: Passed")
 
+    vault = HashicorpVault(args.vault_token)
+    credentials = vault.read_postgres_credentials()
+
     params = dict(
-        user=args.db_user,
-        password=args.db_password,
-        host=args.db_host,
-        port=args.db_port,
-        dbname=args.db_name
+        user=credentials.user,
+        password=credentials.password,
+        dbname=credentials.dbname,
+        host=db_tools.POSTGRES_HOST,
+        port=db_tools.POSTGRES_PORT,
     )
 
     db = db_tools.get_db(**params)
