@@ -34,7 +34,7 @@ jobs:
           context: .
           file: Dockerfiles/twitter.trainer.dockerfile
           push: true
-          tags: danielto1404/ml-pipe-twitter-sentiment:latest
+          tags: danielto1404/twitter-sentiment-vault-kafka:latest
       - name: Build and push Hashicorp custom image
         uses: docker/build-push-action@v4
         with:
@@ -48,4 +48,4 @@ jobs:
           context: .
           file: Dockerfiles/storing.credentials.dockerfile
           push: true
-          tags: danielto1404/vault-store-credentials:latest
+          tags: danielto1404/vault-store-credentials-kafka:latest
