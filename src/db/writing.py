@@ -21,5 +21,7 @@ def write_predictions(db: Database, predictions: pd.DataFrame):
     cursor = db.conn.cursor()
     cursor.copy_from(stream, TWITTER_SENTIMENTS_PREDICTIONS)
 
+    return predictions
+
 
 __all__ = ["write_predictions"]
