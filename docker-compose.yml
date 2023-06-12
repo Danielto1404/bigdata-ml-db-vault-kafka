@@ -2,7 +2,6 @@ version: "3.9"
 services:
   twitter-sentiment:
     image: danielto1404/ml-pipe-twitter-sentiment:latest
-    container_name: twitter-sentiment
     platform: linux/amd64
     command: bash -c "python src/train.py --exp_name=tfidf_logreg
       && python src/test.py --vault-token=${VAULT_TOKEN}

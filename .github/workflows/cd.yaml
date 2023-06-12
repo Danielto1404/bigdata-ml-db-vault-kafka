@@ -24,7 +24,5 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Pull with docker compose
-        run: docker-compose pull
       - name: Run pipeline
         run: docker-compose up --abort-on-container-exit
