@@ -59,6 +59,8 @@ services:
     image: danielto1404/vault-store-credentials:latest
     container_name: store-credentials
     platform: linux/amd64
+    ports:
+      - "8001:8001"
     links:
       - "hashicorp:vault"
     command: bash -c "python src/vault.py \
