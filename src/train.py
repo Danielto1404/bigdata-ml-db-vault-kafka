@@ -132,6 +132,10 @@ def main():
     parser.add_argument("--exp_name", required=True)
     args = parser.parse_args()
 
+    logging.info(f"Train path: {args.train}")
+    logging.info(f"Test path: {args.test}")
+    logging.info(f"Experiment name: {args.exp_name}")
+
     trainer = TweetsClassificationTrainer.default_trainer(args.train, args.test)
     logging.info("Fitting model")
     train_f1, valid_f1 = trainer.fit(use_validation=True)
