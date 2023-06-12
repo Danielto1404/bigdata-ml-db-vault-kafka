@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 import db as db_tools
+import kafka_utils
 from train import TweetsClassificationTrainer
 from vault import HashicorpVault
 
@@ -33,12 +34,13 @@ def main():
         logging.info("Functional test: Passed")
 
     vault = HashicorpVault(args.vault_token)
-    credentials = vault.read_postgres_credentials()
+    db_credentials = vault.read_postgres_credentials()
+    kafka_credentials = vault.read_kafka_credentials()
 
     params = dict(
-        user=credentials.user,
-        password=credentials.password,
-        dbname=credentials.dbname,
+        user=db_credentials.user,
+        password=db_credentials.password,
+        dbname=db_credentials.dbname,
         host=db_tools.POSTGRES_HOST,
         port=db_tools.POSTGRES_PORT,
     )
@@ -49,11 +51,19 @@ def main():
     test_data["prediction"] = predictions
 
     logging.info("Writing predictions to database")
-    db_tools.write_predictions(db, test_data)
+    test_data = db_tools.write_predictions(db, test_data)
 
     logging.info("Reading predictions from database")
     predictions_from_db = db_tools.read_predictions(db)
     print(predictions_from_db[:5])
+
+    producer = kafka_utils.get_producer(
+        kafka_host=kafka_credentials.host,
+        kafka_port=kafka_credentials.port
+    )
+
+    logging.info("Sending predictions to Kafka")
+    kafka_utils.send_kafka_predictions(producer, test_data)
 
 
 if __name__ == "__main__":
