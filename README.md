@@ -38,6 +38,7 @@ ___
     * [CD](./.github/workflows/cd.yaml)
 7. Saving logs with [Greenplum](https://greenplum.org/) database during functional testing
 8. Secrets vault with [HashiCorp Vault](https://www.vaultproject.io/)
+9. Message broker with [Kafka](https://kafka.apache.org/)
 ___
 
 ### Run tests
