@@ -62,8 +62,18 @@ def main():
         kafka_port=kafka_credentials.port
     )
 
+    consumer = kafka_utils.get_consumer(
+        kafka_host=kafka_credentials.host,
+        kafka_port=kafka_credentials.port
+    )
+
     logging.info("Sending predictions to Kafka")
     kafka_utils.send_kafka_predictions(producer, test_data)
+    
+    logging.info("Reading predictions from Kafka")
+    predictions_from_kafka = kafka_utils.get_predictions_from_kafka(consumer)
+    logging.info("Predictions from Kafka")
+    logging.info(predictions_from_kafka[:5])
 
 
 if __name__ == "__main__":

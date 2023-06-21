@@ -2,7 +2,7 @@ version: "3.9"
 services:
   twitter-sentiment:
     image: danielto1404/twitter-sentiment-vault-kafka:latest
-    platform: linux/amd64
+    # platform: linux/amd64
     container_name: twitter-sentiment-vault-kafka
     build:
       context: .
@@ -28,7 +28,7 @@ services:
   postgres:
     image: postgres:latest
     container_name: database
-    platform: linux/amd64
+    # platform: linux/amd64
     ports:
       - "5432:5432"
     volumes:
@@ -70,7 +70,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfiles/storing.credentials.dockerfile
-    platform: linux/amd64
+    # platform: linux/amd64
     ports:
       - "8001:8001"
     links:
@@ -118,12 +118,3 @@ services:
       --topic=kafka-predictions \
       --if-not-exists \
       --bootstrap-server=kafka:9092"
-
-  kafka-consumer:
-    image: confluentinc/cp-kafka:7.3.2
-    container_name: kafka-consumer
-    command: bash -c "kafka-console-consumer \
-      --bootstrap-server kafka:9092 \
-      --topic kafka-predictions \
-      --from-beginning \
-      --timeout-ms 300000" # 5 minutes
